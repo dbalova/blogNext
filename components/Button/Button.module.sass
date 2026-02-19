@@ -1,0 +1,29 @@
+.button
+  border: none
+  border-radius: 4px
+  cursor: pointer
+  font-weight: 500
+  transition: all 0.2s
+  padding: 15px
+  font-size: 16px
+  font-family: var(--font-fira-sans), sans-serif
+
+  &:disabled
+    background-color: var(--color-disabled)
+    border-color: var(--color-disabled)
+    cursor: not-allowed
+
+
+.primary
+  background-color: var(--accent-color)
+  color: var(--main-color)
+  min-width: 100px
+
+  &:hover
+    box-shadow: var(--box-shadow)
+    transition: 0.3s ease
+
+
+.secondary
+  background-color: var(--bg-color)
+  color: var(--text-color)
