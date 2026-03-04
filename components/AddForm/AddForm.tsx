@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import Field from '../Field/Field';
 import Button from '../Button/Button';
+import { ArticleFormData } from '../../types/articleFormData.types';
 import styles from './AddForm.module.sass';
 
 export default function AddForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ArticleFormData>({
     title: '',
     slug: '',
     date: new Date().toISOString().split('T')[0],
@@ -12,15 +13,15 @@ export default function AddForm() {
     content: ''
   });
 
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setStatus(null);
@@ -36,7 +37,6 @@ export default function AddForm() {
 
       if (res.ok) {
         setStatus({ type: 'success', message: 'Статья добавлена' });
-
         setFormData({
           title: '',
           slug: '',
@@ -101,7 +101,7 @@ export default function AddForm() {
         <Button
           type="submit"
           variant="primary"
-          disabled={loading}
+          isDisabled={loading}
         >
           Добавить статью
         </Button>

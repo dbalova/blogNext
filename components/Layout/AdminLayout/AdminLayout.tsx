@@ -2,8 +2,10 @@ import Head from 'next/head';
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Footer';
 import styles from './AdminLayout.module.sass';
-
-export default function AdminLayout({ children }) {
+export interface AdminLayoutProps {
+  children: React.ReactNode
+}
+export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className={styles.layout}>
       <Head>

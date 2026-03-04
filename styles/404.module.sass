@@ -1,0 +1,34 @@
+@use 'mixins' as m
+
+.container
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  min-height: 60vh
+  text-align: center
+
+.title
+  font-size: 120px
+  font-weight: 800
+  margin: 0
+  color: var(--accent-color)
+  font-family: var(--font-oswald), sans-serif
+
+  @include m.tablet
+    font-size: 80px
+
+.subtitle
+  font-size: 32px
+  margin: 0 0 24px
+  color: var(--accent-color)
+  font-family: var(--font-oswald), sans-serif
+
+.link
+  font-family: var(--font-oswald), sans-serif
+  font-size: 18px
+
+  &:hover
+    text-decoration: underline
+    text-decoration-thickness: 2px
+    text-underline-offset: 3px

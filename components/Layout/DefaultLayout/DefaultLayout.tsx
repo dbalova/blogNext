@@ -1,8 +1,10 @@
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Footer';
 import styles from './DefaultLayout.module.sass';
-
-export default function Layout({ children }) {
+export interface LayoutProps {
+  children: React.ReactNode
+}
+export default function Layout({ children }: LayoutProps) {
   return (
     <div className={styles.layout}>
       <Header></Header>

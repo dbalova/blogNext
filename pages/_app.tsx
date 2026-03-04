@@ -1,4 +1,5 @@
 import { Oswald, Fira_Sans } from 'next/font/google';
+import type { AppProps } from 'next/app'; 
 import '../styles/main.sass';
 
 const oswald = Oswald({
@@ -15,6 +16,6 @@ const firaSans = Fira_Sans({
   variable: '--font-fira-sans',
 });
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
   return <div className={`${oswald.variable} ${firaSans.variable}`}><Component {...pageProps} /></div>;
 }

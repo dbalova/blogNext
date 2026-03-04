@@ -1,15 +1,11 @@
 import Link from 'next/link';
+import { ArticleData } from '../../types/articleData.types';
 import styles from './ArticlesCard.module.sass';
-export default function ArticlesCard(props) {
-    const {
-        slug,
-        date,
-        title,
-        description
-    } = props;
+
+export default function ArticlesCard({ slug, date, title, description }: ArticleData) {
     return (
-        <Link href={`/articles/${slug}`}>
-            <li className={styles.item} key={slug}>
+        <li className={styles.item}>
+            <Link href={`/articles/${slug}`}>
                 <div className={styles.title}>{title}</div>
                 <div className={styles.description}>
                     {description}
@@ -17,6 +13,7 @@ export default function ArticlesCard(props) {
                 <div className={styles.date}>
                     {date}
                 </div>
-            </li></Link>
+            </Link>
+        </li>
     );
 }

@@ -1,10 +1,27 @@
-export default function handler(req, res) {
+import { ArticleData } from '@/types/articleData.types';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+interface NewArticleResponse {
+  success: boolean,
+  message: string,
+  article?: {
+    slug: string,
+    title: string,
+    date: string,
+    description: string
+  content?: string
+  }
+}
+
+export default function handler(req: NextApiRequest,
+  res: NextApiResponse<NewArticleResponse>) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    return res.status(405).json({ success: false, 
+      message: 'Method not allowed' });
   }
 
   try {
-    const { title, content, slug, description, date } = req.body;
+    const { title, content, slug, description, date } = req.body as ArticleData;
     if (!title || !content || !slug || !description || !date) {
       return res.status(400).json({
         success: false,
@@ -25,8 +42,8 @@ export default function handler(req, res) {
       article: {
         slug,
         title,
-        date: date,
-        description: description,
+        date,
+        description,
         content
       }
     });

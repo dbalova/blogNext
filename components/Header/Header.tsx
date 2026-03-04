@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import styles from './Header.module.sass';
 
-export default function Header({ siteTitle = "Articles" }) {
+interface HeaderProps {
+  siteTitle?: string
+}
+
+export default function Header({ siteTitle = "Articles" }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
@@ -17,7 +21,8 @@ export default function Header({ siteTitle = "Articles" }) {
               <Link href="/admin?admin=true" className={styles.link}>Админка</Link>
             </li>
           </ul>
-        </nav></div>
+        </nav>
+      </div>
     </header>
   );
 }

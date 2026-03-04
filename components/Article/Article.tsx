@@ -1,6 +1,12 @@
 import Link from 'next/link';
+import { ArticleData } from '../../types/articleData.types';
 import styles from './Article.module.sass';
-export default function Article({ articleData }) {
+
+export interface ArticleProps {
+    articleData: ArticleData
+}
+
+export default function Article({ articleData }: ArticleProps) {
     return (
         <>
             <article className={styles.article}>
@@ -9,7 +15,7 @@ export default function Article({ articleData }) {
                 <div className={styles.date}>
                     {articleData.date}
                 </div>
-                <div className={styles.content} dangerouslySetInnerHTML={{ __html: articleData.content }} />
+                <div className={styles.content} dangerouslySetInnerHTML={{ __html: articleData.content! }} />
             </article>
         </>
     );
