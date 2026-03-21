@@ -4,6 +4,17 @@ import Button from '../Button/Button';
 import { ArticleFormData } from '../../types/articleFormData.types';
 import styles from './AddForm.module.sass';
 
+const validSlug = (slug: string): { isValid: boolean; error?: string } => {
+  const slugRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+  if (!slugRegex.test(slug)) {
+    return {
+      isValid: false,
+      error: 'Slug должен содержать только латинские буквы(a-z), цифры (0-9) и дефисы (-)'
+    };
+  }
+  return { isValid: true };
+};
+
 export default function AddForm() {
   const [formData, setFormData] = useState<ArticleFormData>({
     title: '',
@@ -23,6 +34,13 @@ export default function AddForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const validation = validSlug(formData.slug);
+    if (!validation.isValid) {
+      setStatus({ type: 'error', message: ` ${validation.error}` });
+      return;
+    }
+
     setLoading(true);
     setStatus(null);
 

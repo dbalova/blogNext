@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -7,31 +7,23 @@ import ArticlesList from '../components/ArticlesList/ArticlesList';
 import Pagination from '../components/Pagination/Pagination';
 import { ArticleData } from '@/types/articleData.types';
 import { PaginationInfo } from '@/types/paginationInfo';
+import { loadingArticles } from '@/lib/loadingArticles';
 
 interface HomeProps {
   initialData: {
-    articles: ArticleData[]
-    pagination: PaginationInfo
+    articles: ArticleData[];
+    pagination: PaginationInfo;
   }
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async ({ query }) => {
   try {
-    const page = query.page || 1;
-    const url = process.env.NEXT_PUBLIC_BASE_URL;
-    const res = await fetch(`${url}/api/articles?page=${page}`);
-    const data = await res.json();
+    const page = Number(query.page) || 1;
+    const data = await loadingArticles(page);
 
     return {
       props: {
-        initialData: {
-          articles: data.articles || [],
-          pagination: data.pagination || {
-            currentPage: 1,
-            totalPages: 1,
-            totalArticles: 0
-          }
-        }
+        initialData: data
       },
     };
   } catch (error) {
@@ -43,7 +35,10 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({ query 
           pagination: {
             currentPage: 1,
             totalPages: 1,
-            totalArticles: 0
+            totalArticles: 0,
+            limit: 5,
+            hasNextPage: false,
+            hasPrevPage: false,
           }
         }
       },
@@ -55,26 +50,33 @@ export default function Home({ initialData }: HomeProps) {
   const [articles, setArticles] = useState<ArticleData[]>(initialData.articles || []);
   const [pagination, setPagination] = useState<PaginationInfo>(initialData.pagination || {});
 
+  const prevPageRef = useRef<number>(initialData.pagination?.currentPage || 1);
+
   useEffect(() => {
+    const page = router.query.page ? Number(router.query.page) : 1;
+    
+    if (page === prevPageRef.current) {
+      return;
+    }
+
+    if (page === 1) {
+      setArticles(initialData.articles);
+      setPagination(initialData.pagination);
+      prevPageRef.current = 1;
+      return;
+    }
+
     const loadArticles = async () => {
-      const page = router.query.page || 1;
-
       try {
-        const url = process.env.NEXT_PUBLIC_BASE_URL;
-        const res = await fetch(`${url}/api/articles?page=${page}`);
-        const data = await res.json();
-
-        if (data.success) {
-          setArticles(data.articles);
-          setPagination(data.pagination);
-        }
+        const data = await loadingArticles(page);
+        setArticles(data.articles);
+        setPagination(data.pagination);
+        prevPageRef.current = page;
       } catch (error) {
         console.error('Ошибка загрузки:', error);
       }
     };
-    if (router.query.page) {
-      loadArticles();
-    }
+    loadArticles();
   }, [router.query.page]);
 
   return (

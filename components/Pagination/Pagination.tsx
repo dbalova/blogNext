@@ -9,6 +9,9 @@ export default function Pagination({ currentPage, totalPages, basePath = '/' }: 
     if (totalPages <= 1) return null;
 
     const createPageUrl = (page: number) => {
+        if (page === 1) {
+            return { pathname: basePath, query: {} };
+        }
         const query = { ...router.query, page };
         return {
             pathname: basePath,

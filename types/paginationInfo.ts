@@ -3,6 +3,6 @@ export interface PaginationInfo {
   totalPages: number,
   totalArticles: number,
   limit: number,
-  hasNextPage?: boolean,
-  hasPrevPage?: boolean
+  hasNextPage: boolean,
+  hasPrevPage: boolean
 }

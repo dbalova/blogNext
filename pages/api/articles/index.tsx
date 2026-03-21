@@ -3,6 +3,23 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { PaginationInfo } from '@/types/paginationInfo';
 import { ArticlesResponse } from '@/types/articlesResponse.types';
 
+const validPage = (page: unknown): number => {
+  const num = Number(page);
+  if (isNaN(num) || num < 1) {
+    return 1;
+  }
+  return num;
+};
+
+const validLimit = (limit: unknown): number => {
+  const num = Number(limit);
+  if (isNaN(num) || num <= 0) {
+    return 5;
+  }
+  return num;
+};
+
+
 export default function handler(req: NextApiRequest,
   res: NextApiResponse<ArticlesResponse>) {
 
@@ -15,16 +32,30 @@ export default function handler(req: NextApiRequest,
   }
 
   try {
-
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 5;
+    const page = validPage(req.query.page);
+    const limit = validLimit(req.query.limit);
 
     const articles = getArticlesData();
+    const totalPages = Math.ceil(articles.length / limit);
+
+    if (page > totalPages) {
+      return res.status(200).json({
+        success: true,
+        articles: [],
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalArticles: 0,
+          limit,
+          hasNextPage: false,
+          hasPrevPage: true,
+        },
+      });
+    }
+
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const paginatedArticles = articles.slice(startIndex, endIndex);
-
-    const totalPages = Math.ceil(articles.length / limit);
 
     res.status(200).json({
       success: true,

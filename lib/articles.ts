@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import sanitizeHtml from 'sanitize-html';
 import { ArticleData } from '@/types/articleData.types';
 
 const articlesDirectory = path.join(process.cwd(), 'content/articles');
@@ -46,11 +47,26 @@ export async function getArticleData(slug: string): Promise<ArticleData> {
     .process(matterResult.content);
   const content = processedContent.toString();
 
+  const safeHtml = sanitizeHtml(content, {
+    allowedTags: [
+      'p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4',
+      'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre',
+      'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+    ],
+    allowedAttributes: {
+      a: ['href', 'target', 'rel'],
+      img: ['src', 'alt', 'title'],
+      code: ['class'],
+      pre: ['class'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto'],
+  });
+
   return {
     slug,
     title: matterResult.data.title || 'Без названия',
     date: matterResult.data.date || new Date().toISOString().split('T')[0],
     description: matterResult.data.description || '',
-    content,
+    content: safeHtml,
   };
 }
